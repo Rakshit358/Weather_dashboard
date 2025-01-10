@@ -2,15 +2,15 @@ import { useContext } from "react";
 import {
   CityContext,
   CoordinateContext,
+  FutureDaysContext,
   WeatherPropertiesContext,
 } from "../context";
 
 export default function SearchBar() {
   const { city, setCity } = useContext(CityContext);
   const { coordinates, setCoordinates } = useContext(CoordinateContext);
-  const { weatherProperties, setWeatherProperties } = useContext(
-    WeatherPropertiesContext
-  );
+  const { setWeatherProperties } = useContext(WeatherPropertiesContext);
+  const { setFutureDays } = useContext(FutureDaysContext);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -38,6 +38,27 @@ export default function SearchBar() {
     }
   };
 
+  const fetchFutureWeather = async () => {
+    const apiKey = import.meta.env.VITE_API_KEY;
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${apiKey}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      const futureData = data.list.map((day) => {
+        return {
+          date: new Date(day.dt * 1000).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          temperature: (day.main.temp - 273.15).toFixed(2),
+        };
+      });
+      setFutureDays(futureData);
+    }
+  };
+
   const fetchLocation = async () => {
     const apiKey = import.meta.env.VITE_API_KEY;
     const response = await fetch(
@@ -47,6 +68,7 @@ export default function SearchBar() {
     console.log(data[0]);
     setCoordinates({ lat: data[0].lat, lon: data[0].lon });
     fetchWeather();
+    fetchFutureWeather();
   };
 
   const handleChange = (e) => {

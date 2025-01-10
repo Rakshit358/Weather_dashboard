@@ -1,9 +1,11 @@
 import { useState } from "react";
 import CompleteInfoGrid from "./components/CompleteInfoGrid";
 import TopBar from "./components/TopBar";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import {
   CityContext,
   CoordinateContext,
+  FutureDaysContext,
   WeatherPropertiesContext,
 } from "./context";
 
@@ -19,20 +21,23 @@ export default function App() {
     min_temperature: 0,
     weather_desc: "",
   });
+  const [futureDays, setFutureDays] = useState([{ date: 0, temperature: 0 }]);
 
   return (
-    <WeatherPropertiesContext.Provider
-      value={{ weatherProperties, setWeatherProperties }}
-    >
-      <CoordinateContext.Provider value={{ coordinates, setCoordinates }}>
-        <CityContext.Provider value={{ city, setCity }}>
-          <div>
-            <TopBar />
-            <div className="text-3xl p-6 ml-4">Weather Today</div>
-            <CompleteInfoGrid />
-          </div>
-        </CityContext.Provider>
-      </CoordinateContext.Provider>
-    </WeatherPropertiesContext.Provider>
+    <FutureDaysContext.Provider value={{ futureDays, setFutureDays }}>
+      <WeatherPropertiesContext.Provider
+        value={{ weatherProperties, setWeatherProperties }}
+      >
+        <CoordinateContext.Provider value={{ coordinates, setCoordinates }}>
+          <CityContext.Provider value={{ city, setCity }}>
+            <div>
+              <TopBar />
+              <div className="text-3xl p-6 ml-4">Weather Today</div>
+              <CompleteInfoGrid />
+            </div>
+          </CityContext.Provider>
+        </CoordinateContext.Provider>
+      </WeatherPropertiesContext.Provider>
+    </FutureDaysContext.Provider>
   );
 }
