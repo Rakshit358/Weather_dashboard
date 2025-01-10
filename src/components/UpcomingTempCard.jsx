@@ -5,7 +5,7 @@ export default function UpcomingTempCard() {
   const { futureDays } = useContext(FutureDaysContext);
 
   return (
-    <div className=" rounded-lg p-4 bg-gray-100 m-6">
+    <div className=" rounded-lg p-4 bg-gray-100 m-6 shadow-lg">
       {futureDays.slice(0, 6).map((item, index) => (
         <div
           key={index}

@@ -21,7 +21,7 @@ export default function CurrentLocation(props) {
   const dayName = daysOfWeek[day];
 
   return (
-    <div className="border border-black rounded-lg p-4 bg-gray-100 m-6">
+    <div className="border shadow-md border-black rounded-lg p-4 bg-gray-100 m-6">
       <div className="p-4">{props.icon}</div>
       <div className="text-4xl font-semibold p-2">
         {weatherProperties.temperature.toFixed(2)}°C

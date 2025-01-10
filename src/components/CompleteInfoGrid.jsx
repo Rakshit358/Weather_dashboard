@@ -11,7 +11,7 @@ const futureData = [
 
 export default function CompleteInfoGrid() {
   return (
-    <div className="grid grid-cols-4 gap-3 m-4">
+    <div className="grid grid-cols-4 gap-3 m-4 ">
       <div className="col-span-1">
         <CurrentLocationCard
           icon={

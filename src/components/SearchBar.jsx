@@ -4,15 +4,20 @@ import {
   CityContext,
   CoordinateContext,
   FutureDaysContext,
+  PopularCitiesContext,
+  SunInformationContext,
+  UniqueForecastDaysContext,
   WeatherPropertiesContext,
 } from "../context";
 
 export default function SearchBar() {
+  const { setUniqueForecastDays } = useContext(UniqueForecastDaysContext);
   const { city, setCity } = useContext(CityContext);
   const { coordinates, setCoordinates } = useContext(CoordinateContext);
   const { setWeatherProperties } = useContext(WeatherPropertiesContext);
   const { setFutureDays } = useContext(FutureDaysContext);
   const { setAirQuality } = useContext(AirQualityContext);
+  const { setSunInformation } = useContext(SunInformationContext);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -58,6 +63,11 @@ export default function SearchBar() {
         min_temperature: data.main.temp_min - 273.15,
         weather_desc: data.weather[0].main,
       });
+      setSunInformation({
+        sunrise: data.sys.sunrise,
+        sunset: data.sys.sunset,
+        feels_like: (data.main.feels_like - 273.15).toFixed(2),
+      });
     }
   };
 
@@ -69,6 +79,27 @@ export default function SearchBar() {
     if (response.ok) {
       const data = await response.json();
       console.log(data);
+
+      const unique = [];
+      const uniqueData = [];
+
+      const uniqueForecastDays = data.list.filter((day) => {
+        const date = new Date(day.dt * 1000).toLocaleDateString();
+        if (!unique.includes(date)) {
+          unique.push(date);
+          uniqueData.push({
+            date: date,
+            temperature: (day.main.temp - 273.15).toFixed(2),
+            desc: day.weather[0],
+          });
+          return true;
+        }
+        return false;
+      });
+
+      setUniqueForecastDays(uniqueData);
+      console.log(uniqueData);
+
       const futureData = data.list.map((day) => {
         return {
           date: new Date(day.dt * 1000).toLocaleTimeString([], {
@@ -105,7 +136,7 @@ export default function SearchBar() {
         <input
           type="search"
           id="default-search"
-          className="w-full text-black border-none outline-none"
+          className="w-full text-black border-none outline-none font-medium text-md"
           placeholder="Enter city name..."
           required
           onChange={handleChange} // Update state on input change

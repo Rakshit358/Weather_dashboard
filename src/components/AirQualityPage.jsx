@@ -72,7 +72,7 @@ export default function AirQualityPage() {
 
   return (
     <div>
-      <div className="bg-gray-300 ml-10 mb-4 rounded-xl p-2 mr-2 flex flex-col items-center justify-center">
+      <div className="shadow-lg bg-gray-300 ml-10 mb-4 rounded-xl p-2 mr-2 flex flex-col items-center justify-center">
         <h1 className="text-slate-900 font-semibold text-lg">
           Overall Air Quality Index: {airQuality.PM2_5}
         </h1>

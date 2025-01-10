@@ -12,7 +12,10 @@ export default function MenuBar() {
           <OptionComponent title="Sun Information" />
         </Link>
         <Link to="/weekly">
-          <OptionComponent title="Next Five Days" />
+          <OptionComponent title="Popular Cities" />
+        </Link>
+        <Link to="/nextFiveDays">
+          <OptionComponent title="Next 5 Days" />
         </Link>
       </div>
     </div>
