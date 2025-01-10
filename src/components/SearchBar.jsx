@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import {
+  AirQualityContext,
   CityContext,
   CoordinateContext,
   FutureDaysContext,
@@ -11,11 +12,33 @@ export default function SearchBar() {
   const { coordinates, setCoordinates } = useContext(CoordinateContext);
   const { setWeatherProperties } = useContext(WeatherPropertiesContext);
   const { setFutureDays } = useContext(FutureDaysContext);
+  const { setAirQuality } = useContext(AirQualityContext);
 
   const handleSearch = (e) => {
     e.preventDefault();
     console.log(city);
     fetchLocation();
+  };
+
+  const fetchAirQuality = async () => {
+    const apiKey = import.meta.env.VITE_API_KEY;
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/air_pollution?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${apiKey}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      setAirQuality({
+        CO: data.list[0].components.co,
+        NO: data.list[0].components.no,
+        NO2: data.list[0].components.no2,
+        O3: data.list[0].components.o3,
+        SO2: data.list[0].components.so2,
+        PM2_5: data.list[0].components.pm2_5,
+        PM10: data.list[0].components.pm10,
+        NH3: data.list[0].components.nh3,
+      });
+    }
   };
 
   const fetchWeather = async () => {
@@ -33,7 +56,7 @@ export default function SearchBar() {
         pressure: data.main.pressure,
         max_temperature: data.main.temp_max - 273.15,
         min_temperature: data.main.temp_min - 273.15,
-        weather_desc: data.weather[0].description,
+        weather_desc: data.weather[0].main,
       });
     }
   };
@@ -69,6 +92,7 @@ export default function SearchBar() {
     setCoordinates({ lat: data[0].lat, lon: data[0].lon });
     fetchWeather();
     fetchFutureWeather();
+    fetchAirQuality();
   };
 
   const handleChange = (e) => {
@@ -82,7 +106,7 @@ export default function SearchBar() {
           type="search"
           id="default-search"
           className="w-full text-black border-none outline-none"
-          placeholder="Search Mockups, Logos..."
+          placeholder="Enter city name..."
           required
           onChange={handleChange} // Update state on input change
           value={city} // Controlled input
