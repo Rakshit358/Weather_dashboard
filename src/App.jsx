@@ -17,6 +17,7 @@ import AirQualityPage from "./components/AirQualityPage";
 import SunInformationPage from "./components/SunInformationPage";
 import NextDaysPage from "./components/NextDaysPage";
 import NextFiveDaysPage from "./components/NextFiveDaysPage";
+import TemperatureChartPage from "./components/TemperatureChartPage";
 
 export default function App() {
   const [uniqueForecastDays, setUniqueForecastDays] = useState([]);
@@ -122,6 +123,10 @@ export default function App() {
                             path="/nextFiveDays"
                             element={<NextFiveDaysPage />}
                           />
+                          <Route
+                            path="/temperatureChart"
+                            element={<TemperatureChartPage />}
+                          ></Route>
                         </Routes>
                       </BrowserRouter>
                       <h1 className="text-center m-2 font-bold text-gray-600">

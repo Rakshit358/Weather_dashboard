@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   AirQualityContext,
   CityContext,
@@ -20,10 +20,43 @@ export default function SearchBar() {
   const { setSunInformation } = useContext(SunInformationContext);
 
   const handleSearch = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     console.log(city);
     fetchLocation();
   };
+
+  useEffect(() => {
+    // Function to get the user's current location
+    const fetchPosition = async () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            console.log("Latitude:", latitude, "Longitude:", longitude);
+
+            // Fetch city name using a reverse geocoding API
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            );
+            const data = await response.json();
+            const cityName =
+              data.address.city || data.address.town || data.address.village;
+            setCity(cityName || "Unknown City");
+          },
+          (error) => {
+            console.error("Error fetching location:", error);
+            setCity("Location unavailable");
+          }
+        );
+      } else {
+        console.error("Geolocation not supported by this browser.");
+        setCity("Geolocation not supported");
+      }
+    };
+
+    fetchPosition();
+    handleSearch();
+  }, []);
 
   const fetchAirQuality = async () => {
     const apiKey = import.meta.env.VITE_API_KEY;

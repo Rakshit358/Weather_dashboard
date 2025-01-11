@@ -17,6 +17,9 @@ export default function MenuBar() {
         <Link to="/nextFiveDays">
           <OptionComponent title="Next 5 Days" />
         </Link>
+        <Link to="/temperatureChart">
+          <OptionComponent title="Temperature Chart" />
+        </Link>
       </div>
     </div>
   );
